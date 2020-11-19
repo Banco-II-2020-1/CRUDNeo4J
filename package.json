@@ -1,0 +1,26 @@
+{
+  "name": "crudneo4j",
+  "version": "1.0.0",
+  "description": "Exemplo de CRUD no Neo4J com o NodeJS feito nas aulas de bancos de dados II.",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Banco-II-2020-1/CRUDNeo4J.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Banco-II-2020-1/CRUDNeo4J/issues"
+  },
+  "homepage": "https://github.com/Banco-II-2020-1/CRUDNeo4J#readme",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "neo4j-driver": "^4.2.1",
+    "nodemon": "^2.0.6"
+  }
+}
