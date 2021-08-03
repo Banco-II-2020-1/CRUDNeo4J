@@ -7,45 +7,36 @@ const driver = neo4j.driver(uri, neo4j.auth
 const session = driver.session();
 
 async function addPessoa(obj){
-    try{
-        const query = `CREATE (p:Pessoa{nome:"${obj.nome}", email:"${obj.email}"}) RETURN p`;
-        await session.run(query).then(result => console.log(result.records[0].length>0));
-    }finally{
-        await session.close();
-    }
+    await session.run('CREATE (p:Pessoa{nome:$nome, email:$email}) RETURN p',{
+        nome: obj.nome,
+        email: obj.email
+        }).then(result => console.log(result.records[0].length>0))
+        .catch(error => console.log(error))
+        .then(session.close);
 }
 
 async function addAmizade(email1, email2){
-    try{
-        const query = `MATCH (p1:Pessoa), (p2:Pessoa) 
-            WHERE p1.email="${email1}" AND p2.email="${email2}"
-            CREATE (p1)-[:AMIGO]->(p2)`;
-        await session.run(query).then(result => console.log(
-            result.summary.counters._stats.relationshipsCreated));
-    } finally{
-        await session.close();
-    }
+    await session.run('MATCH (p1:Pessoa), (p2:Pessoa) WHERE p1.email=$email1 AND p2.email=$email2 CREATE (p1)-[:AMIGO]->(p2)',
+        {email1: email1, email2:email2})
+        .then(result => console.log(result.summary.counters._stats.relationshipsCreated))
+        .catch(error => console.log(error))
+        .then(session.close);
 }
 
 async function updatePessoa(){
-    try{
-        const query = `MATCH (p:Pessoa{email:"paulo.freitas@gmail.com"}) 
-            SET p.email="paulo@gmail.com"`;
-        await session.run(query).then(result => console.log(
-            result.summary.counters._stats.propertiesSet));
-    }finally{
-        await session.close();
-    }
+    await session.run('MATCH (p:Pessoa{email:$email}) SET p.email=$email2',
+        {email:'paulo.freitas@gmail.com', email2:'paulo@gmail.com'})
+        .then(result => console.log(result.summary.counters._stats.propertiesSet))
+        .catch(error => console.log(error))
+        .then(session.close);
 }
 
 async function deletePessoa(email){
-    try{
-        const query = `MATCH (p:Pessoa{email:"${email}"}) DETACH DELETE p`;
-        await session.run(query).then(result => console.log(
-            result.summary.counters._stats.nodesDeleted));
-    }finally{
-        await session.close();
-    }
+    await session.run('MATCH (p:Pessoa{email:$email}) DETACH DELETE p',
+        {email:email})
+        .then(result => console.log(result.summary.counters._stats.nodesDeleted))
+        .catch(error => console.log(error))
+        .then(session.close);
 }
 
 // const obj = {
@@ -64,4 +55,4 @@ async function deletePessoa(email){
 
 // updatePessoa();
 
-// deletePessoa("paulo.freitas.nt@gmail.com");
+// deletePessoa("paulo@gmail.com");
